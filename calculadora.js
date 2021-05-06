@@ -1,7 +1,3 @@
-const prompt = require('prompt');
-
-prompt.start();
-
 class Calculator {
     calcVisualization(moneyValue) {
         let totalVisualization = 0;
