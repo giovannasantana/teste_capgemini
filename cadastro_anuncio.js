@@ -71,7 +71,7 @@ const registerAdsMenu = () => {
     });
 }
 
-
+//Buscando Anuncio
 const getRegisterAdsMenu = () => {
     console.log(report.getRegisterAds().toString())
     console.log('\n')
