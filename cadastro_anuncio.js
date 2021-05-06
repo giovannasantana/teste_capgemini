@@ -1,5 +1,6 @@
-const moment = require('moment');
-var readline = require('readline');
+const moment = require('moment')
+const readline = require('readline')
+const calculator = require('./calculadora')
 
 class Report {
     constructor() {
@@ -7,6 +8,10 @@ class Report {
     }
     
     registerAds({nameAds, client, dateStart, dateEnd, investmentDays }) {
+        if(nameAds === "") {
+            return "Nome invalido"
+        }
+
         this.ads.push({
             nameAds,
             client,
@@ -14,6 +19,23 @@ class Report {
             dateEnd,
             investmentDays 
         })
+    }
+
+
+    getRegisterAds() {
+        const result = this.ads.map((value) => {
+            const dateStart = moment(value.dateStart, 'DD/MM/YYYY')
+            const dateEnd = moment(value.dateEnd, 'DD/MM/YYYY')
+            const days = dateEnd.diff(dateStart, 'days')
+
+            const money = days * value.investmentDays
+
+            const resultCalculator = calculator.calcVisualization(money)
+
+            return resultCalculator;
+        })
+
+        return result;
     }
 }
 
@@ -23,55 +45,52 @@ var rl = readline.createInterface({
     output: process.stdout
 });
 
+const report = new Report();
 
-var recursiveAsyncReadLine = function () {
+const registerAdsMenu = () => {
+    rl.question('Nome do anuncio: ', (name) => {
+        rl.question('Cliente: ', (client) => {
+            rl.question("Data de Inicio: ", (dateStart)  => {
+                rl.question("Data de Fim: ", (dateEnd) => {
+                    rl.question("Investimento por dia: ", (investment)  => {
+                       const register = report.registerAds({
+                            nameAds: name,
+                            client: client,
+                            dateStart: dateStart,
+                            dateEnd: dateEnd,
+                            investmentDays: investment,
+                        })
+                        
+                        console.log(register)
+                        console.log('\n')
+                        menu();
+                    })
+                })
+            })
+        });
+    });
+}
+
+
+const getRegisterAdsMenu = () => {
+    console.log(report.getRegisterAds().toString())
+    console.log('\n')
+    menu();
+}
+
+
+var menu = function () {
     rl.question("Relatorio:\n"
         + "1)  Cadastro\n"
         + "2)  Relatorio\n"
         + "3)  Sair\n"
         , function (line) {
-
             switch (line){
                 case "1":
-                    let nome = ""
-                    let cliente = ""
-                    let data_inicio = ""
-                    let data_fim = ""
-                    let investimento_por_dia = ""
-
-                    const report = new Report();
-
-                    rl.question("Nome do anuncio: ", function (name) {
-                        nome = name
-                    })
-
-                    rl.question("Cliente: ", function (client) {
-                        cliente = client
-                    })
-
-                    rl.question("Data de Inicio: ", function (date) {
-                        data_inicio = date
-                    })
-
-                    rl.question("Data de Fim: ", function (date) {
-                        data_fim = date
-                    })
-
-                    rl.question("Data de Fim: ", function (investment) {
-                        investimento_por_dia = investment
-                    })
-
-
-                    report.registerAds({
-                        nameAds: nome,
-                        client: result.cliente,
-                        dateStart: result.data_inicio,
-                        dateEnd: data_fim,
-                        investmentDays: investimento_por_dia,
-                    })
+                    registerAdsMenu()
                     break;
                 case "2":
-                    console.log("this is option 2");
+                    getRegisterAdsMenu()
                     break;
                 case "3":
                     return rl.close();
@@ -79,61 +98,13 @@ var recursiveAsyncReadLine = function () {
                 default:
                     console.log("Digite um valor valido: ");
             }
-    recursiveAsyncReadLine(); //Calling this function again to ask new question
+            menu();
     });
 };
 
-recursiveAsyncReadLine();
+menu();
 
 
 
-// const rlp = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//     terminal: true
-// });
-  
 
-// while(true){
-//     console.log('Relatorio:\n');
-//     console.log('1. Cadastro:');
-//     console.log('2. Relatorio Anucios:');
-
-//     rlp.question("Menu valor: ",function(answer) {
-//         console.log('Oh, so your favorite food is ' + answer);
-//     });
-// }
-
-
-// prompt.get(['menu', 'nome', 'cliente', 'data_inicio', 'data_fim', 'investimento_por_dia'], function (err, result) {
-//     if (err) { return onErr(err); }
-
-//     const report = new Report();
-
-//     switch (result.menu) {
-//         case 1:
-//             report.registerAds({
-//                 nameAds: result.menu,
-//                 client: result.cliente,
-//                 dateStart: result.data_inicio,
-//                 dateEnd: data_fim,
-//                 investmentDays: investimento_por_dia,
-//             })
-//         break;
-
-//         case 2:
-            
-//         break;
-    
-//         default:
-//             break;
-//     }
-
-//     //console.log(calculator.calcVisualization(result.valor_investido))
-// });
-
-// function onErr(err) {
-//     console.log(err);
-//     return 1;
-// }
 
