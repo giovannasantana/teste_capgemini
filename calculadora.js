@@ -23,18 +23,4 @@ class Calculator {
     }
 }
 
-
-prompt.get(['valor_investido'], function (err, result) {
-    if (err) { return onErr(err); }
-    console.log('Calculadora:\n');
-    console.log('Valor investido: ' + result.valor_investido);
-
-    const calculator = new Calculator();
-    console.log(calculator.calcVisualization(result.valor_investido))
-});
-
-function onErr(err) {
-    console.log(err);
-    return 1;
-}
-
+module.exports = new Calculator()
